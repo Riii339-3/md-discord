@@ -30,20 +30,27 @@ client.on("ready", async () => {
     const token = process.env.DISCORD_TOKEN
     for (let i = 0; i < markdowns.length; i++) {
         const data = markdowns[i]
-        if (!data.isSetuped) {
+        if (data.isSetuped) {
             continue
         }
-
-        const messageId = data.messageId
         const channelId = data.channelId
         const mdpath = data.path
         const mdfile = fs.readFileSync(mdpath, "utf-8")
 
         const channel = await client.channels.fetch(channelId)
-        const message = await channel.messages.fetch(messageId)
-        message.edit({content: mdfile})
+        const message = await channel.send({content: mdfile})
+        const messageId = message.id
+
+        data.messageId = messageId
+        data.isSetuped = true
 
     }
+    fs.writeFileSync(
+        "./markdowns.json",
+        JSON.stringify(markdowns, null, 2),
+        "utf-8"
+    )
+    debug && console.log("file writed")
 
     await client.destroy();
 })
