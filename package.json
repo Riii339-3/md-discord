@@ -1,0 +1,15 @@
+{
+  "name": "md-discord",
+  "version": "1.0.0",
+  "description": "test",
+  "license": "MIT",
+  "author": "Riii3393",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1"
+  }
+}
