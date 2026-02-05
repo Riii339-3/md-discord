@@ -41,7 +41,7 @@ client.on("ready", async () => {
 
         const channel = await client.channels.fetch(channelId)
         const message = await channel.messages.fetch(messageId)
-        message.edit({content: mdfile})
+        await message.edit({content: mdfile})
 
     }
 
