@@ -5,5 +5,16 @@ on: [push]
 jobs: 
     echo_hello_world:
         runs-on: ubuntu-latest
-        steps: 
-            - run: echo "hello world!!"
+        strategy:
+              matrix:
+                    node-version: ['18.x', '20.x']
+        steps:
+            - uses: actions/checkout@v5
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                node-version: ${{ matrix.node-version }}
+            - name: install discord.js
+              run: npm install discord.js
+            - name: hello world
+              run: console.log("hello world")
