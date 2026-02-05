@@ -1,9 +1,9 @@
-name: Github Action Demo
+name: Change Discord Message
 
 on: [push]
 
 jobs: 
-    echo_hello_world:
+    echo_send:
         runs-on: ubuntu-latest
         strategy:
               matrix:
