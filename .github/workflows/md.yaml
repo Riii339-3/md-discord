@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "markdowns/**"
     paths-ignore:
       - ".state/**"
 
