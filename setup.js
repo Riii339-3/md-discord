@@ -1,3 +1,7 @@
+/*
+このコードはもう使われていません
+This code is no longer in use
+
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require('discord.js');
 
@@ -56,3 +60,4 @@ client.on("ready", async () => {
 })
 
 client.login(process.env.DISCORD_TOKEN);
+*/
