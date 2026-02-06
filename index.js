@@ -6,7 +6,7 @@ const fs = require('fs');
 const debug = true
 
 if (!process.env.DISCORD_TOKEN) {
-    debug && console.log(`Not found Discord Token`)
+    debugMessage(`Not found Discord Token`)
     return
 }
 
@@ -18,34 +18,54 @@ const client = new Client({
     ]
 });
 
-debug && console.log(`${client}`)
+debugMessage(`${client}`)
 
 client.on("ready", async () => {
-    debug && console.log("readyed")
+    debugMessage("ready")
     const markdowns = JSON.parse(
-        fs.readFileSync("markdowns.json", "utf-8")
+        fs.readFileSync("config/markdowns.json", "utf-8")
     )
-    if (debug) console.log(`readed markdowns.json: ${markdowns}`)
-        
-    const token = process.env.DISCORD_TOKEN
+
+    if (!fs.existsSync(".state")) fs.mkdirSync(".state", { recursive: true })
+    if (!fs.existsSync(".state/data.json")) fs.writeFileSync(".state/data.json", "[]")
+    
+    const jsondata = JSON.parse(
+        fs.readFileSync(".state/data.json", "utf-8")
+    )
+
     for (let i = 0; i < markdowns.length; i++) {
         const data = markdowns[i]
-        if (!data.isSetuped) {
-            continue
-        }
 
-        const messageId = data.messageId
         const channelId = data.channelId
         const mdpath = data.path
-        const mdfile = fs.readFileSync(mdpath, "utf-8")
-
-        const channel = await client.channels.fetch(channelId)
-        const message = await channel.messages.fetch(messageId)
-        await message.edit({content: mdfile})
-
+        if (!channelId || !mdpath) {
+            throw new Error("channelId or path not found")
+        }
+        const mdfile = fs.readFileSync(`./markdowns/${mdpath}`, "utf-8")
+        if (!jsondata[i]?.isSended) {
+            const channel = await client.channels.fetch(channelId)
+            const message = await channel.send({content: mdfile})
+            jsondata[i] = {}
+            jsondata[i].isSended = true
+            jsondata[i].messageId = message.id
+        }
+        else {
+            const messageId = jsondata[i].messageId
+            const channel = await client.channels.fetch(channelId)
+            const message = await channel.messages.fetch(messageId)
+            await message.edit({content: mdfile})
+        }
     }
-
+    fs.writeFileSync(
+        ".state/data.json",
+        JSON.stringify(jsondata, null, 2),
+        "utf-8"
+    )
     await client.destroy();
 })
 
 client.login(process.env.DISCORD_TOKEN);
+
+function debugMessage(message) {
+    debug && console.log(message)
+}
