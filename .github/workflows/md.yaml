@@ -10,8 +10,6 @@ on:
       - main
     paths:
       - "markdowns/**"
-    paths-ignore:
-      - ".state/**"
 
 jobs: 
     echo_send:
